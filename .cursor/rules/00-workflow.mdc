@@ -1,0 +1,51 @@
+---
+description: Always-apply workflow rules for the xidikr/TEST repo. Locks Cursor agents into the agent-pipeline discipline (PR + verify.sh + auto-merge + no force-push to main).
+alwaysApply: true
+---
+
+# Workflow rules — read first, every turn
+
+You are operating inside `xidikr/TEST`. The full agent contract is in `AGENTS.md` at the repository root — **read it on first activation each session, then act on the rules below.**
+
+## Hard rules (violation = stop and ask the human)
+
+1. **Never `git push` directly to `main`.** All changes go on a feature/fix branch + PR + auto-merge.
+2. **Never `git push --force` to `main` or any branch with an open PR.** `--force-with-lease` is allowed only on your own private feature branch and only after telling the user.
+3. **Never bypass `scripts/verify.sh`.** No `--no-verify` on commits, no `[skip ci]`, no commenting out CI steps. If verify is failing, **fix the code, not the script.**
+4. **Never commit secrets.** Tokens, private keys (`id_rsa`, `id_ed25519*`), `.env`, `*.pem`, `*.token`, `credentials.json`. The `.gitignore` already lists them; if `git status` shows one, ask the user before adding.
+5. **Never modify untracked files you don't recognize.** They may be the user's parallel work in another window. Stash or skip; ask before touching.
+6. **Never modify global `~/.gitconfig` user identity** without explicit user approval. Repo-local `.git/config` (`git config user.name`) is fine.
+7. **Never modify existing entries in `~/.ssh/config`.** Append-only.
+8. **Existing files (`AGENTS.md`, `.gitignore`, `README.md`, `.cursor/rules/*`) get appended, not overwritten.** Surface any conflict to the user first.
+9. **One PR = one logical change.** If you find an unrelated bug or want to refactor, open a separate PR.
+10. **Report status after every workflow stage and wait for user confirmation before starting the next stage.** No silent multi-stage runs.
+
+## Default workflow for any non-trivial change
+
+When the user asks for a change (bug fix, feature, doc edit), follow `.cursor/commands/ship.md` (the `/ship` command). Do **not** invent ad-hoc procedures. The ship flow is:
+
+1. Sync local `main` with `origin/main`.
+2. Branch off main: `<type>/<short-slug>` (e.g. `fix/clamp-velocity`, `feat/add-readme`, `chore/...`, `docs/...`).
+3. Make focused edits.
+4. `bash scripts/verify.sh` — must pass locally.
+5. Commit with conventional message: `<type>: <short imperative>`.
+6. Push: `git push -u origin <branch>`.
+7. Open PR with the 4-section body (Summary / Test plan / Risk / Related). Use REST API `gh api repos/.../pulls -X POST ...` — **avoid `gh pr create`** (it can race GraphQL indexing on fresh pushes).
+8. `gh pr merge <num> --squash --auto --delete-branch` to enable auto-merge.
+9. Watch CI (`gh pr checks <num> --watch`) until green or red.
+10. After merge, `git checkout main && git pull && git branch -d <branch>` to clean up.
+11. Report PR URL and merge SHA to the user.
+
+## Things to confirm with the user before doing them
+
+- **Force-push** to anything (even your own feature branch with an open PR).
+- **Disabling / weakening branch protection** or any CI check.
+- **Adding a new dependency** (Python package, system apt package, npm package, etc.).
+- **Touching `verify.sh`** to add or remove a step.
+- **Modifying anything in `~/.ssh/`, `~/.config/gh/`, `~/.gitconfig`.**
+
+## Tone
+
+- Concise reports after each stage. No filler.
+- When you don't know, say so. Don't invent.
+- When something feels off (e.g. unexpected files in worktree, CI red, gh CLI behaving weird), **stop and ask** — do not paper over it.
