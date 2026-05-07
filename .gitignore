@@ -1,0 +1,106 @@
+# ============================================================
+#  .gitignore — mixed C++ / Python project
+#  Maintained by Cursor agent pipeline. Append-only when extending.
+# ============================================================
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg
+*.egg-info/
+.eggs/
+.python-version
+.venv/
+venv/
+env/
+.env
+.env.*
+!.env.example
+
+# Test / lint caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+.hypothesis/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+.cache/
+
+# Build artifacts (Python)
+dist/
+*.whl
+pip-wheel-metadata/
+
+# uv
+uv.lock.bak
+
+# ---------- C / C++ ----------
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.so.*
+*.dylib
+*.dll
+*.exe
+*.out
+*.app
+*.gch
+*.pch
+*.d
+*.i
+*.s
+*.ii
+
+# CMake
+build/
+build-*/
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+CMakeUserPresets.json
+CTestTestfile.cmake
+cmake_install.cmake
+install_manifest.txt
+Testing/
+compile_commands.json
+.cmake/
+
+# Make / Ninja
+.ninja_deps
+.ninja_log
+
+# ---------- Editors / IDEs ----------
+.vscode/
+.idea/
+*.swp
+*.swo
+*.bak
+*~
+*.tmp
+
+# ---------- OS ----------
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ---------- Logs ----------
+*.log
+logs/
+
+# ---------- Secrets (NEVER commit) ----------
+*.pem
+*.key
+id_rsa
+id_ed25519
+.aws/
+.ssh/
+secrets/
+credentials.json
+*.token
