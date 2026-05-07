@@ -34,6 +34,25 @@ The agent will:
 
 See [`.cursor/commands/ship.md`](.cursor/commands/ship.md) for the full procedure.
 
+## Quick recipes
+
+Common day-to-day tasks, with the exact phrasing that triggers the `/ship` skill cleanly.
+
+| Task | Say this in Cursor chat |
+|---|---|
+| Fix a typo in a file | `/ship fix typo in <file>: <wrong> -> <right>` |
+| Add a new section to a doc | `/ship docs: add <section title> section to <file>` |
+| Add a small feature | `/ship feat: add <feature> to <module>` |
+| Update CI workflow | `/ship ci: <what changes in .github/workflows>` |
+| Bump a dependency version | `/ship chore: bump <dep> from <old> to <new>` |
+| Add a test for an existing function | `/ship test: cover <function> with edge-case checks` |
+
+The agent picks the branch type prefix automatically from the verb in your sentence (`fix:` → `fix/`, `add` → `feat/`, `update` → `chore/` or `ci/`, etc.). If you want to override, say it explicitly:
+
+```
+/ship as docs: rename "Branch protection" section to "Protection rules"
+```
+
 ## Branch protection (status)
 
 `main` is protected with:
